@@ -1,6 +1,6 @@
 <template>
-     <i v-if="state" class="fa fa-check-square-o" aria-hidden="true" @click="click()"></i>
-    <i v-else class="fa fa-square-o" aria-hidden="true" @click="click()"></i>
+    <i v-if="state" title="Pause" class="fas fa-pause" @click="click()"></i>
+    <i v-else title="Play" class="fas fa-play" @click="click()"></i>
 </template>
 
 <script>
@@ -11,6 +11,8 @@ export default {
     click: async function () {
            this.$emit('click');
     },
+
+    computed: {}
 }
 </script>
 

@@ -6,7 +6,8 @@
 export default {
   props: [
       'active',
-      'endsAt'
+      'endsAt',
+      'lastUpdate'
   ],
 
   mounted() {
