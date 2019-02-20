@@ -14,22 +14,36 @@ export default {
   },
 
   mounted() {
-    this.stopwatch = moment.utc(this.seconds*1000).format('HH:mm:ss');;
+    // console.log('mounted')
     this.interval = setInterval(this.updateTimer, 1000);
+    this.stopwatch = this.hhmmss(this.seconds);
   },
 
   beforeDestroy() {
+    // console.log('destroyed')
     clearInterval(this.interval);
   },
 
+  watch: {},
+
   methods: {
     updateTimer: function() {
-      if (this.active && this.seconds > 0 ) {
-        this.$emit("update:seconds", this.seconds  - 1);
+      if (this.active && this.seconds > 0) {
+        this.$emit("update:seconds", this.seconds - 1);
       }
+      this.stopwatch = this.hhmmss(this.seconds);
+    },
 
-      // this.stopwatch = this.seconds.toString();
-      this.stopwatch = moment.utc(this.seconds*1000).format('HH:mm:ss');
+    hhmmss: function(secs) {
+        var minutes = Math.floor(secs / 60);
+        secs = secs % 60;
+        var hours = Math.floor(minutes / 60);
+        minutes = minutes % 60;
+        return `${this.pad(hours)}:${this.pad(minutes)}:${this.pad(secs)}`;
+    },
+
+    pad: function (num) {
+      return ("0"+num).slice(-2);
     }
   }
 };

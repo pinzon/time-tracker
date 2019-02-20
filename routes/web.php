@@ -18,4 +18,5 @@ Route::get('/', function () {
 Route::get('/task', 'TaskController@get' );
 Route::post('/task', 'TaskController@new' );
 Route::put('/task', 'TaskController@edit' );
+Route::put('/task/play', 'TaskController@playButton' );
 Route::delete('/task', 'TaskController@delete' );

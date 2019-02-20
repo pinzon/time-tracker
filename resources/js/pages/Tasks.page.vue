@@ -33,7 +33,7 @@
               <playbutton
                 class="action-button"
                 :state="task.active"
-                @click="playbuttonPressed(task,index)"
+                @click="playbuttonPressed(task)"
               ></playbutton>
               <i
                 title="Edit task"
@@ -223,16 +223,15 @@ export default {
       };
 
       this.modal = true;
-      console.log("Edit task window");
+      // console.log("Edit task window");
     },
 
-    showModalDelete: function(task) {
+    showModalDelete: function(task,index) {
       this.itemIndex = index
       this.formErrors = {};
       this.action = 2; // Delete
       this.formData = { id: task.id };
       this.modalDelete = true;
-      console.log("Edit task window");
     },
 
     submitForm: function() {
@@ -278,7 +277,11 @@ export default {
       })
         .done(function(result) {
           if(result.error == 0){
-            component.tasks[component.itemIndex] = result.task
+            component.tasks[component.itemIndex].name = result.task.name
+            component.tasks[component.itemIndex].hours = result.task.hours
+            component.tasks[component.itemIndex].minutes = result.task.minutes
+            component.tasks[component.itemIndex].seconds = result.task.seconds
+            component.tasks[component.itemIndex].secondsLeft = result.task.secondsLeft
             component.closeModals();
           }else{
             component.ajaxFormError = true;
@@ -306,8 +309,24 @@ export default {
         });
     },
 
-    playbuttonPressed: function() {
-      console.log("Play button pressed");
+    playbuttonPressed: function(task) {
+      var component  = this
+      $.ajax({
+        type: "PUT",
+        url: "/task/play",
+        data: {id: task.id, secondsLeft: task.secondsLeft, '_token': component.csrf_token}
+      })
+        .done(function(result) {
+          if(result.error == 0){      
+            task.active = !task.active;
+          }else{
+            alert('Error at play/pause button')
+          }
+        })
+        .fail(function() {
+          alert('Error at play/pause button')
+        });
+      
     },
 
     closeModals: function() {

@@ -41,8 +41,7 @@ class TaskController extends Controller
         $task->minutes = $minutes;
         $task->seconds = $seconds;
         $task->secondsLeft = ($hours * 3600) + ($minutes * 60) + $seconds;
-        $task->createdAt = time();
-        $task->shouldEndAt = $task->createdAt + $task->secondsLeft;
+        $task->shouldEndAt = time() + $task->secondsLeft;
         $task->save();
 
         return response()->json([
@@ -65,6 +64,24 @@ class TaskController extends Controller
             $task->minutes = $minutes;
             $task->seconds = $seconds;
             $task->secondsLeft = ($hours * 3600) + ($minutes * 60) + $seconds;
+            $task->shouldEndAt = time() + $task->secondsLeft;
+            $task->save();
+
+            $result['error'] = 0;
+            $result['info'] = 'No error';
+            $result['task'] = $task;
+        }
+
+        return response()->json($result);
+    }
+
+    public function playButton(Request $request)
+    {
+        $result = ['error' => 1, 'info' => 'Task Not Found' ];
+        $task = Task::find($request->id);
+        if($task){
+            $task->active =  !$task->active;
+            $task->secondsLeft =  intval($request->secondsLeft);
             $task->shouldEndAt = time() + $task->secondsLeft;
             $task->save();
 
